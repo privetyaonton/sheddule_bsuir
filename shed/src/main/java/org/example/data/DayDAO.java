@@ -11,6 +11,7 @@ public class DayDAO implements TableDAO {
         );
         preparedStatement.setInt(1, code_day);
         preparedStatement.executeUpdate();
+        preparedStatement.close();
     }
     public void delete (int id, Connection connection) throws SQLException{
         PreparedStatement preparedStatement = connection.prepareStatement(
@@ -18,17 +19,22 @@ public class DayDAO implements TableDAO {
         );
         preparedStatement.setInt(1, id);
         preparedStatement.executeUpdate();
+        preparedStatement.close();
     }
     public ResultSet select (Connection connection) throws SQLException{
         Statement statement = connection.createStatement();
-        return statement.executeQuery("SELECT * FROM day;");
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM day;");
+        statement.close();
+        return resultSet;
     }
     public ResultSet select (int id, Connection connection) throws SQLException{
         PreparedStatement preparedStatement = connection.prepareStatement(
                 "SELECT * FROM day WHERE id_day = ?;"
         );
         preparedStatement.setInt(1, id);
-        return preparedStatement.executeQuery();
+        ResultSet resultSet = preparedStatement.executeQuery();
+        preparedStatement.close();
+        return resultSet;
     }
     public void update (int id, Object[] list, Connection connection) throws SQLException{
         int code_day = (int) list[0];
@@ -38,5 +44,6 @@ public class DayDAO implements TableDAO {
         preparedStatement.setInt(1, code_day);
         preparedStatement.setInt(2, id);
         preparedStatement.executeUpdate();
+        preparedStatement.close();
     }
 }

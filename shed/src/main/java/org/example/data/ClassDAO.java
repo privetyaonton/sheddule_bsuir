@@ -23,6 +23,7 @@ public class ClassDAO implements TableDAO {
         preparedStatement.setString(5, time_start);
         preparedStatement.setString(6, time_end);
         preparedStatement.executeUpdate();
+        preparedStatement.close();
     }
     public void delete (int id, Connection connection) throws SQLException{
         PreparedStatement preparedStatement = connection.prepareStatement(
@@ -30,17 +31,22 @@ public class ClassDAO implements TableDAO {
         );
         preparedStatement.setInt(1, id);
         preparedStatement.executeUpdate();
+        preparedStatement.close();
     }
     public ResultSet select (Connection connection) throws SQLException{
         Statement statement = connection.createStatement();
-        return statement.executeQuery("SELECT * FROM classes;");
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM classes;");
+        statement.close();
+        return resultSet;
     }
     public ResultSet select (int id, Connection connection) throws SQLException{
         PreparedStatement preparedStatement = connection.prepareStatement(
                 "SELECT * FROM classes WHERE id_class = ?;"
         );
         preparedStatement.setInt(1, id);
-        return preparedStatement.executeQuery();
+        ResultSet resultSet = preparedStatement.executeQuery();
+        preparedStatement.close();
+        return resultSet;
     }
     public void update(int id, Object[] list, Connection connection) throws SQLException{
         int id_group = (int) list[0];
@@ -63,5 +69,6 @@ public class ClassDAO implements TableDAO {
         preparedStatement.setString(6, time_end);
         preparedStatement.setInt(7, id);
         preparedStatement.executeUpdate();
+        preparedStatement.close();
     }
 }
