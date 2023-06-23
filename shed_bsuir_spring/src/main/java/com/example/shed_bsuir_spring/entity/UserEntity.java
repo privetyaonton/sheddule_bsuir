@@ -2,6 +2,8 @@ package com.example.shed_bsuir_spring.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "users")
 public class UserEntity {
@@ -21,6 +23,19 @@ public class UserEntity {
 
     @Column (name = "email")
     private String email;
+
+    @ManyToMany (cascade = CascadeType.ALL)
+    @JoinTable (name = "teacherlist", joinColumns = @JoinColumn(name = "id_user"),
+    inverseJoinColumns = @JoinColumn(name = "id_teacher"))
+    private Set <TeacherEntity> teacherEntitySet;
+
+    public Set<TeacherEntity> getTeacherEntitySet() {
+        return teacherEntitySet;
+    }
+
+    public void setTeacherEntitySet(Set<TeacherEntity> teacherEntitySet) {
+        this.teacherEntitySet = teacherEntitySet;
+    }
 
     public UserEntity(){
     }
