@@ -1,6 +1,8 @@
 package com.example.shed_bsuir_spring.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
+
 import java.util.Set;
 
 @Entity
@@ -20,9 +22,6 @@ public class TeacherEntity {
     @Column (name = "parent_name")
     private String parentName;
 
-    @Column (name = "id_departament")
-    private int idDepartament;
-
     @ManyToOne
     @JoinColumn (name = "id_departament", referencedColumnName = "id_departament")
     private DepartamentEntity departamentEntity;
@@ -41,11 +40,12 @@ public class TeacherEntity {
     public TeacherEntity() {
     }
 
-    public TeacherEntity(String name, String surname, String parentName, int idDepartament) {
+    public TeacherEntity(String name, String surname, String parentName,
+                         DepartamentEntity departamentEntity) {
         this.name = name;
         this.surname = surname;
         this.parentName = parentName;
-        this.idDepartament = idDepartament;
+        this.departamentEntity = departamentEntity;
     }
 
     public int getId() {
@@ -78,14 +78,6 @@ public class TeacherEntity {
 
     public void setParentName(String parentName) {
         this.parentName = parentName;
-    }
-
-    public int getIdDepartament() {
-        return idDepartament;
-    }
-
-    public void setIdDepartament(int idDepartament) {
-        this.idDepartament = idDepartament;
     }
 
     public DepartamentEntity getDepartamentEntity() {

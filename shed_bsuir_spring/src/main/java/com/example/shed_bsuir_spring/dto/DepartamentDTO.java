@@ -10,15 +10,11 @@ public class DepartamentDTO {
     public DepartamentDTO() {
     }
 
-    public DepartamentDTO(int id) throws FailedSetDTO {
-        DepartamentService departamentService = new DepartamentService();
-        DepartamentEntity departamentEntity = departamentService.getById(id);
-        if (departamentEntity == null) throw new FailedSetDTO();
-
-        facultyDTO = new FacultyDTO(departamentEntity.getIdFaculty());
-        name = departamentEntity.getName();
+    public DepartamentDTO(FacultyDTO facultyDTO, String name) throws FailedSetDTO{
+        this.facultyDTO = facultyDTO;
+        if (name == null) throw new FailedSetDTO();
+        this.name = name;
     }
-
     public FacultyDTO getFacultyDTO() {
         return facultyDTO;
     }

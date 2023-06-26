@@ -16,9 +16,6 @@ public class DepartamentEntity {
     @Column (name = "name")
     private String name;
 
-    @Column (name = "id_faculty", insertable = false, updatable = false)
-    private int idFaculty;
-
     @ManyToOne ()
     @JoinColumn (name = "id_faculty", referencedColumnName = "id_faculty")
     private FacultyEntity facultyEntity;
@@ -38,9 +35,9 @@ public class DepartamentEntity {
     public DepartamentEntity() {
     }
 
-    public DepartamentEntity(String name, int idFaculty) {
+    public DepartamentEntity(String name, FacultyEntity facultyEntity) {
         this.name = name;
-        this.idFaculty = idFaculty;
+        this.facultyEntity = facultyEntity;
     }
 
     public FacultyEntity getFacultyEntity(){
@@ -53,9 +50,6 @@ public class DepartamentEntity {
     public String getName(){
         return name;
     }
-    public int getIdFaculty(){
-        return idFaculty;
-    }
 
     public void setId(int id) {
         this.id = id;
@@ -63,10 +57,6 @@ public class DepartamentEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setIdFaculty(int idFaculty) {
-        this.idFaculty = idFaculty;
     }
 
 

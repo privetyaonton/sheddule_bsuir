@@ -1,7 +1,9 @@
 package com.example.shed_bsuir_spring.controller;
 
+import com.example.shed_bsuir_spring.dto.TeacherDTO;
 import com.example.shed_bsuir_spring.dto.UserDTO;
 import com.example.shed_bsuir_spring.entity.UserEntity;
+import com.example.shed_bsuir_spring.request.UserRequest;
 import com.example.shed_bsuir_spring.service.NoContentException;
 import com.example.shed_bsuir_spring.service.NotFoundException;
 import com.example.shed_bsuir_spring.service.UserService;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/usr")
@@ -18,28 +21,22 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping ("/find")
+    @GetMapping ("/{id}")
     @ResponseBody
-    public ResponseEntity<UserEntity> findUserById (@RequestParam int id){
-        UserEntity findUser = userService.getUserByLogin(id);
-        if (findUser != null){
-            return new ResponseEntity<>(findUser, HttpStatus.FOUND);
-        } else {
+    public ResponseEntity<UserDTO> findUserById (@PathVariable int id){
+        try{
+            UserDTO userDTO = userService.getUserByLogin(id);
+            return new ResponseEntity<>(userDTO, HttpStatus.FOUND);
+        } catch (NotFoundException nf){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping ("/add")
     @ResponseBody
-    public ResponseEntity<Void> addNewUser (@RequestParam String login,
-                                                  @RequestParam String password,
-                                                  @RequestParam int role,
-                                                  @RequestParam String email){
-        UserEntity addUser = new UserEntity(login, Integer.toString(password.hashCode()),
-                role, email);
-
+    public ResponseEntity<Void> addNewUser (@RequestBody UserRequest userRequest){
         try{
-            userService.insertUser(addUser);
+            userService.insertUser(userRequest);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (NoContentException nce){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -48,10 +45,13 @@ public class UserController {
 
     @DeleteMapping ("/delete")
     @ResponseBody
-    public ResponseEntity<Void> deleteUser (@RequestParam int id){
-        if (userService.deleteUser(id)){
-            return ResponseEntity.ok().build();
-        } else return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deleteUser (@RequestParam Long id){
+        try{
+            userService.deleteUser(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (NotFoundException notFoundException){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping ("/")
@@ -62,9 +62,9 @@ public class UserController {
     @PutMapping ("/upt/pass")
     @ResponseBody
     public ResponseEntity<Void> updatePassword (@RequestParam int id,
-                                                @RequestParam String new_pass){
+                                                @RequestParam String newPass){
         try{
-            userService.updatePassword(id, new_pass);
+            userService.updatePassword(id, newPass);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (NoContentException e){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -73,7 +73,7 @@ public class UserController {
         }
     }
 
-    @PutMapping ("upt/email")
+    @PutMapping ("/upt/email")
     @ResponseBody
     public ResponseEntity<Void> updateEmail (@RequestParam int id,
                                                 @RequestParam String new_email){
@@ -86,6 +86,29 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @PostMapping ("/{id}/teacher/add")
+    @ResponseBody
+    public ResponseEntity<Void> addTeacherToUser (@PathVariable int id,
+                                                  @RequestParam int idt){
+        try{
+            userService.addTeacherToSet(id, idt);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (NotFoundException notFoundException){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @GetMapping("/{id}/teacher/")
+    @ResponseBody
+    public ResponseEntity<List<TeacherDTO>> getTeacherOfUser (@PathVariable int id){
+        try{
+            return new ResponseEntity<>(userService.getTeacherById(id), HttpStatus.OK);
+        } catch (NotFoundException notFoundException){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+
 
 
 

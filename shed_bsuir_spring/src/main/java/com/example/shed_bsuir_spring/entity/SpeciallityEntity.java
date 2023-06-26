@@ -10,9 +10,6 @@ public class SpeciallityEntity {
     @Column (name = "id_speciallity")
     private int id;
 
-    @Column (name = "id_faculty", insertable = false, updatable = false)
-    private int idFaculty;
-
     @Column (name = "name")
     private String name;
 
@@ -20,10 +17,12 @@ public class SpeciallityEntity {
     @JoinColumn (name = "id_faculty", referencedColumnName = "id_faculty")
     private FacultyEntity facultyEntity;
 
-    public SpeciallityEntity(int idFaculty, String name) {
-        this.idFaculty = idFaculty;
+    public SpeciallityEntity(FacultyEntity facultyEntity, String name) {
         this.name = name;
+        this.facultyEntity = facultyEntity;
     }
+
+
 
     public SpeciallityEntity() {
     }
@@ -34,14 +33,6 @@ public class SpeciallityEntity {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getIdFaculty() {
-        return idFaculty;
-    }
-
-    public void setIdFaculty(int idFaculty) {
-        this.idFaculty = idFaculty;
     }
 
     public String getName() {

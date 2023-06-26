@@ -1,25 +1,12 @@
-package com.example.shed_bsuir_spring.dto;
+package com.example.shed_bsuir_spring.request;
 
-import com.example.shed_bsuir_spring.entity.FacultyEntity;
-import com.example.shed_bsuir_spring.service.FacultyService;
-
-public class FacultyDTO {
+public class FacultyRequest {
     private String fullName;
     private String shortName;
-    private int id;
 
-    public FacultyDTO(String fullName, String shortName, int id){
+    public FacultyRequest(String fullName, String shortName) {
         this.fullName = fullName;
         this.shortName = shortName;
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getFullName() {

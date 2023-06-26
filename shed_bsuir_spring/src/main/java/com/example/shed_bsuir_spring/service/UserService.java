@@ -1,45 +1,51 @@
 package com.example.shed_bsuir_spring.service;
 
-import com.example.shed_bsuir_spring.dto.UserDTO;
+import com.example.shed_bsuir_spring.dto.*;
+import com.example.shed_bsuir_spring.entity.TeacherEntity;
 import com.example.shed_bsuir_spring.entity.UserEntity;
+import com.example.shed_bsuir_spring.repo.TeacherRepository;
 import com.example.shed_bsuir_spring.repo.UserRepository;
+import com.example.shed_bsuir_spring.request.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
-    public UserEntity getUserByLogin (int id){
-        Optional<UserEntity> user = Optional.ofNullable(userRepository.findById(id));
-        return user.orElse(null);
+    @Autowired
+    private TeacherRepository teacherRepository;
+    public UserDTO getUserByLogin (int id) throws NotFoundException{
+        if (userRepository.existsById(id)){
+            UserEntity userEntity = userRepository.findById(id);
+            return new UserDTO(userEntity.getLogin(), userEntity.getPassword(),
+                        userEntity.getEmail(), userEntity.getRole(), id);
+        } else throw new NotFoundException();
     }
-    public void insertUser (UserEntity user) throws NoContentException {
-        if (user.getLogin() != null && user.getPassword() != null &&
-        user.getEmail() != null && (user.getRole() == 0 || user.getRole() == 1) &&
-        !userRepository.existsByEmail(user.getEmail())){
-            userRepository.save(user);
+    public void insertUser (UserRequest userRequest) throws NoContentException {
+        if (userRequest.getLogin() != null && userRequest.getPassword() != null &&
+        userRequest.getEmail() != null && (userRequest.getRole() == 0 ||
+                userRequest.getRole() == 1) && !userRepository.existsByEmail(
+                        userRequest.getEmail()) && !userRepository.existsByLogin(
+                                userRequest.getLogin())){
+            userRepository.save(new UserEntity(userRequest.getLogin(),
+                    userRequest.getPassword(), userRequest.getRole(),
+                    userRequest.getEmail()));
         } else throw new NoContentException();
     }
-    public boolean deleteUser (int id){
+    public void deleteUser (Long id) throws NotFoundException{
         if (userRepository.existsById(id)){
-            userRepository.deleteById((long) id);
-            return true;
-        } else  return false;
+            userRepository.deleteById(id);
+        } else throw new NotFoundException();
     }
     public List<UserDTO> list (){
         List<UserDTO> userDTOList = new ArrayList<>();
         List<UserEntity> userEntityList = userRepository.findAll();
-        for (ListIterator<UserEntity> iterator = userEntityList.listIterator();
-             iterator.hasNext(); ){
-            UserEntity userEntity = iterator.next();
+        for (UserEntity userEntity : userEntityList){
             userDTOList.add(new UserDTO(userEntity.getLogin(), userEntity.getPassword(),
-                    userEntity.getEmail(), userEntity.getRole()));
+                    userEntity.getEmail(), userEntity.getRole(), userEntity.getId()));
         }
         return userDTOList;
     }
@@ -64,9 +70,27 @@ public class UserService {
         } else throw new NotFoundException();
     }
     public void addTeacherToSet (int id_user, int id_teacher) throws NotFoundException{
-
-        UserEntity userEntity = getUserByLogin(id_user);
+        if (userRepository.existsById(id_user) && teacherRepository.existsById(id_teacher)){
+            UserEntity userEntity = userRepository.findById(id_user);
+            TeacherEntity teacherEntity = teacherRepository.findById(id_teacher);
+            userEntity.getTeacherEntitySet().add(teacherEntity);
+            userRepository.save(userEntity);
+        } else throw new NotFoundException();
     }
+    public List<TeacherDTO> getTeacherById (int id) throws NotFoundException{
+        if (userRepository.existsById(id)){
+            UserEntity userEntity = userRepository.findById(id);
+            Set<TeacherEntity> teacherEntitySet = userEntity.getTeacherEntitySet();
+            List<TeacherDTO> teacherDTOList = new ArrayList<>();
+            for (TeacherEntity teacherEntity : teacherEntitySet){
+                teacherDTOList.add(new TeacherDTO(teacherEntity.getName(),
+                        teacherEntity.getSurname(), teacherEntity.getParentName(),
+                        teacherEntity.getDepartamentEntity().getName(), teacherEntity.getId()));
+            }
+            return teacherDTOList;
+        } else throw new NotFoundException();
+    }
+
 
 
 }

@@ -22,6 +22,11 @@ public class FacultyEntity {
     private String short_name;
     public FacultyEntity(){}
 
+    public FacultyEntity(String full_name, String short_name) {
+        this.full_name = full_name;
+        this.short_name = short_name;
+    }
+
     @OneToMany (mappedBy = "facultyEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DepartamentEntity> departamentEntitySet = new ArrayList<>();
     @OneToMany (mappedBy = "facultyEntity", cascade = CascadeType.ALL,

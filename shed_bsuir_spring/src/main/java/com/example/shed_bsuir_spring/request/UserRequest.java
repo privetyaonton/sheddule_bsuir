@@ -1,21 +1,16 @@
-package com.example.shed_bsuir_spring.dto;
+package com.example.shed_bsuir_spring.request;
 
-public class UserDTO {
+public class UserRequest {
     private String login;
     private String password;
     private String email;
     private int role;
-    private int id;
 
-    public UserDTO() {
-    }
-
-    public UserDTO(String login, String password, String email, int role, int id){
+    public UserRequest(String login, String password, String email, int role) {
         this.login = login;
         this.password = password;
         this.email = email;
         this.role = role;
-        this.id = id;
     }
 
     public String getLogin() {
@@ -48,13 +43,5 @@ public class UserDTO {
 
     public void setRole(int role) {
         this.role = role;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 }

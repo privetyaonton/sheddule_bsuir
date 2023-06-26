@@ -25,13 +25,6 @@ public class DepartamentService {
         } else return null;
     }
 
-    public DepartamentEntity addNew (DepartamentEntity departamentEntity){
-        if (facultyRepository.existsById(departamentEntity.getIdFaculty()) &&
-                departamentEntity.getName() != null){
-            return departamentRepository.save(departamentEntity);
-        } else return null;
-    }
-
     public DepartamentEntity getById (int id){
         if (departamentRepository.existsById(id)){
             return departamentRepository.findById(id);

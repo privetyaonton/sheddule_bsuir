@@ -23,4 +23,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>,
     boolean existsById (int id);
     @Override
     @NonNull List<UserEntity> findAll();
+    boolean existsByLogin (String login);
 }
